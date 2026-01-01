@@ -1,8 +1,8 @@
 streamlit==1.28.0
-numpy
-pandas
-scikit-learn
-sentence-transformers
-pypdf
-google-generativeai
-shap
+numpy>=1.25.0
+pandas>=2.1.0
+scikit-learn>=1.3.0
+sentence-transformers>=2.2.2
+pypdf>=3.15.0
+google-generativeai>=0.3.0
+shap>=0.44.1
