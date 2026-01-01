@@ -80,6 +80,8 @@ if not st.session_state["agreed"]:
 
     if st.button("同意する"):
         st.session_state["agreed"] = True
+        with st.spinner("お待ちください..."):
+            time.sleep(2)
         st.rerun()   # ← ここ重要
 
     # 同意前はここで処理を止める
