@@ -535,7 +535,7 @@ def split_text_with_meta(pages, chunk_size=500, overlap=100):
             start = end - overlap
     return chunks
 
-@st.cache_resource
+@st.cache_data
 def prepare_vectorstore(pdf_path):
     pages = load_pdf_pages(pdf_path)
     chunks = split_text_with_meta(pages)
