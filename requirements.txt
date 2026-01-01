@@ -2,6 +2,7 @@ streamlit
 numpy
 pandas
 scikit-learn
+shap
 sentence-transformers
 pypdf
 google-generativeai
