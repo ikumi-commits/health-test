@@ -1,0 +1,104 @@
+[33mcommit 89236f62c5dc83d14ef55faa66fe86c3970bee98[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m)[m
+Author: ikumi-commits <ikumi.moritoki@gmail.com>
+Date:   Fri Jan 2 02:29:01 2026 +0900
+
+    Update requirements.txt to safe version for Streamlit Cloud
+
+ requirements.txt | 14 [32m+++++++[m[31m-------[m
+ 1 file changed, 7 insertions(+), 7 deletions(-)
+
+[33mcommit 60ffd0b87d47f95664f968e99c9ffe3976f69a4a[m
+Author: ikumi-commits <ikumi.moritoki@gmail.com>
+Date:   Fri Jan 2 02:27:08 2026 +0900
+
+    Update requirements.txt to safe versions for Streamlit Cloud
+
+ requirements.txt | 16 [32m+++++++[m[31m---------[m
+ 1 file changed, 7 insertions(+), 9 deletions(-)
+
+[33mcommit cb3bc00c051bbc9d9c4b28d03f4d0dc2befee349[m
+Author: ikumi-commits <ikumi.moritoki@gmail.com>
+Date:   Fri Jan 2 02:25:56 2026 +0900
+
+    Update requirements.txt to safe versions for Streamlit Cloud
+
+ requirements.txt | 14 [32m+++++++[m[31m-------[m
+ 1 file changed, 7 insertions(+), 7 deletions(-)
+
+[33mcommit 86d7014d38b5f5a99dc8101b9940c35cd94196b0[m
+Author: ikumi-commits <ikumi.moritoki@gmail.com>
+Date:   Fri Jan 2 02:23:57 2026 +0900
+
+    Update requirements.txt for Streamlit Cloud safe install
+
+ requirements.txt | 7 [32m++[m[31m-----[m
+ 1 file changed, 2 insertions(+), 5 deletions(-)
+
+[33mcommit ce0ecd580f678567b5a2efe478f14602fadad81d[m
+Author: ikumi-commits <ikumi.moritoki@gmail.com>
+Date:   Fri Jan 2 02:21:58 2026 +0900
+
+    Ignore rf_model.pkl
+
+ .gitignore | Bin [31m30[m -> [32m58[m bytes
+ 1 file changed, 0 insertions(+), 0 deletions(-)
+
+[33mcommit 20f69a88c2c6889bb8a11479805a2180f31a61ba[m
+Author: ikumi-commits <ikumi.moritoki@gmail.com>
+Date:   Fri Jan 2 02:17:41 2026 +0900
+
+    Remove rf_model.pkl and ignore it
+
+ .gitignore | Bin [31m0[m -> [32m30[m bytes
+ 1 file changed, 0 insertions(+), 0 deletions(-)
+
+[33mcommit d21be402309e13db439c4a86cd321d0fcc102e84[m
+Merge: 9cebff3 03e4d96
+Author: ikumi-commits <ikumi.moritoki@gmail.com>
+Date:   Fri Jan 2 02:16:10 2026 +0900
+
+    Merge remote changes and keep local requirements.txt
+
+[33mcommit 03e4d96af5d43dfc4102cc4dcc5991d133b9d712[m
+Author: ikumi-commits <ikumi.moritoki@gmail.com>
+Date:   Fri Jan 2 02:04:15 2026 +0900
+
+    Add files via upload
+
+ health-model.py  | 637 [32m+++++++++++++++++++++++++++++++++++++++++++++++++++++++[m
+ requirements.txt |  11 [32m+[m
+ tokyo-advice.pdf | Bin [31m0[m -> [32m850564[m bytes
+ 3 files changed, 648 insertions(+)
+
+[33mcommit 9cebff3ca8cf28a65cd2cba47bf8f4c49257455c[m
+Author: ikumi-commits <ikumi.moritoki@gmail.com>
+Date:   Fri Jan 2 01:50:23 2026 +0900
+
+    Update requirements.txt
+
+ requirements.txt | 1 [32m+[m
+ 1 file changed, 1 insertion(+)
+
+[33mcommit 711876bf223771eb06a38a13652fbb0a416a1be8[m
+Author: ikumi-commits <ikumi.moritoki@gmail.com>
+Date:   Fri Jan 2 01:48:38 2026 +0900
+
+    Update requirements.txt
+
+ requirements.txt | 4 [32m+++[m[31m-[m
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+[33mcommit 30d4d9535463bb42c6d6026a58a890ec6b29f4ef[m
+Author: ikumi-commits <ikumi.moritoki@gmail.com>
+Date:   Fri Jan 2 01:41:48 2026 +0900
+
+    initial commit
+
+ .streamlit/secrets.toml                         |      1 [32m+[m
+ diabetes_binary_health_indicators_BRFSS2015.csv | 253681 [32m+++++++++++++++++++++[m
+ feature_names.pkl                               |    Bin [31m0[m -> [32m453[m bytes
+ health-model.ipynb                              |   3052 [32m+[m
+ health-model.py                                 |    637 [32m+[m
+ requirements.txt                                |     10 [32m+[m
+ tokyo-advice.pdf                                |    Bin [31m0[m -> [32m850564[m bytes
+ 7 files changed, 257381 insertions(+)
