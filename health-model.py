@@ -1,8 +1,10 @@
 
+import os
 import streamlit as st
 import pickle
 import numpy as np
 import shap
+import gdown
 import pandas as pd
 import google.generativeai as genai
 import time
@@ -92,8 +94,35 @@ from pypdf import PdfReader
 # -------------------------
 # モデルと特徴量の読み込み
 # -------------------------
-with open("rf_model.pkl", "rb") as f:
-    model = pickle.load(f)
+FILE_ID = "1Mh7btoQb9QYpGg0KHhzIrpHhegG5ocq2"
+MODEL_LOCAL_PATH = "rf_model.pkl"
+
+# -------------------------
+# モデル読み込み関数
+# -------------------------
+@st.cache_resource
+def load_model():
+    # ファイルがなければ Google Drive からダウンロード
+    if not os.path.exists(MODEL_LOCAL_PATH):
+        st.info("モデルをダウンロード中です…")
+        url = f"https://drive.google.com/uc?id={FILE_ID}"
+        gdown.download(url, MODEL_LOCAL_PATH, quiet=False)
+        st.success("モデルをダウンロードしました！")
+    # ファイルがあることを確認してから読み込む
+    if os.path.exists(MODEL_LOCAL_PATH):
+        with open(MODEL_LOCAL_PATH, "rb") as f:
+            model = pickle.load(f)
+        return model
+    else:
+        st.error("モデルファイルが存在しません。")
+        st.stop()
+
+# 実際にロード
+model = load_model()
+
+
+#with open("rf_model.pkl", "rb") as f:
+#    model = pickle.load(f)
 
 with open("feature_names.pkl", "rb") as f:
     feature_names = pickle.load(f)
