@@ -426,6 +426,13 @@ if st.session_state["predicted"] and st.session_state["prob"] is not None:
     st.markdown("### 🔍 関係している生活習慣")
 
     with st.container():
+        
+        st.markdown(
+        """
+        <div style="border:1px solid rgba(0,0,0,0.1); padding:1em; border-radius:6px;">
+        """,
+        unsafe_allow_html=True
+        )
 
         if prob < 0.10 and suppress_factors:
 
@@ -459,6 +466,8 @@ if st.session_state["predicted"] and st.session_state["prob"] is not None:
                 "状態を見直すことで、現在の評価が変わる可能性があります。"
             )
 
+        
+        st.markdown("</div>", unsafe_allow_html=True)
 
 
     if prob < 0.10:
