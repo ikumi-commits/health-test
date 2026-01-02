@@ -368,7 +368,7 @@ if st.session_state["predicted"] and st.session_state["prob"] is not None:
     with col2:
         if prob < 0.10:
             st.success("🟢 糖尿病リスクは低めです")
-        elif prob < 0.50:
+        elif prob < 0.30:
             st.warning("🟡 糖尿病リスクがやや高めです")
         else:
             st.error("🔴 糖尿病リスクが高めです")
