@@ -659,10 +659,4 @@ if st.session_state.get("predicted", False):
                     "参照ページ：" + "、".join([f"p.{p}" for p in pages])
                 )
 
-
-
-
-
-
-
-
+                
