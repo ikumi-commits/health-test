@@ -106,10 +106,10 @@ MODEL_LOCAL_PATH = "rf_model.pkl"
 def load_model():
     # ファイルがなければ Google Drive からダウンロード
     if not os.path.exists(MODEL_LOCAL_PATH):
-        st.info("モデルをダウンロード中です…")
+        #st.info("モデルをダウンロード中です…")
         url = f"https://drive.google.com/uc?id={FILE_ID}"
         gdown.download(url, MODEL_LOCAL_PATH, quiet=False)
-        st.success("モデルをダウンロードしました！")
+        #st.success("モデルをダウンロードしました！")
     # ファイルがあることを確認してから読み込む
     if os.path.exists(MODEL_LOCAL_PATH):
         with open(MODEL_LOCAL_PATH, "rb") as f:
@@ -426,13 +426,6 @@ if st.session_state["predicted"] and st.session_state["prob"] is not None:
     st.markdown("### 🔍 関係している生活習慣")
 
     with st.container():
-        
-        st.markdown(
-        """
-        <div style="border:1px solid rgba(0,0,0,0.1); padding:1em; border-radius:6px;">
-        """,
-        unsafe_allow_html=True
-        )
 
         if prob < 0.10 and suppress_factors:
 
@@ -441,13 +434,18 @@ if st.session_state["predicted"] and st.session_state["prob"] is not None:
             )
 
             st.markdown(
-                f'<div class="tag-container">{tags_html}</div>',
+                f"""
+                <div style="border:1px solid rgba(0,0,0,0.1); padding:1em; border-radius:6px;">
+                    <div class="tag-container">
+                        {tags_html}
+                    </div>
+                    <p>
+                        これらは、糖尿病リスクを低めに保つことに関係している可能性がある要因です。<br>
+                        今後も状態を維持することで、現在の評価が保つことができる可能性があります。
+                    </p>
+                </div>
+                """,
                 unsafe_allow_html=True
-            )
-
-            st.markdown(
-                "これらは、糖尿病リスクを低めに保つことに関係している可能性がある要因です。\n"
-                "今後も状態を維持することで、現在の評価が保つことができる可能性があります。"
             )
 
         elif prob >= 0.10 and increase_factors:
@@ -457,17 +455,20 @@ if st.session_state["predicted"] and st.session_state["prob"] is not None:
             )
 
             st.markdown(
-                f'<div class="tag-container">{tags_html}</div>',
+                f"""
+                <div style="border:1px solid rgba(0,0,0,0.1); padding:1em; border-radius:6px;">
+                    <div class="tag-container">
+                        {tags_html}
+                    </div>
+                    <p>
+                        これらは、糖尿病リスクに関係する可能性がある要因です。<br>
+                        状態を見直すことで、現在の評価が変わる可能性があります。
+                    </p>
+                </div>
+                """,
                 unsafe_allow_html=True
             )
 
-            st.markdown(
-                "これらは、糖尿病リスクに関係する可能性がある要因です。\n"
-                "状態を見直すことで、現在の評価が変わる可能性があります。"
-            )
-
-        
-        st.markdown("</div>", unsafe_allow_html=True)
 
 
     if prob < 0.10:
@@ -648,7 +649,19 @@ if st.session_state.get("predicted", False):
             response = genai_model.generate_content(prompt)
 
             with st.container():
-                st.markdown(response.text)
+                st.markdown(
+                    f"""
+                    <div style="border:1px solid rgba(0,0,0,0.1); padding:1em; border-radius:6px;">
+                        {response.text}
+                    </div>
+                    """,
+                    unsafe_allow_html=True
+                )
+
+
+
+#            with st.container():
+#                st.markdown(response.text)
 
             REFERENCE_TITLE = "糖尿病発症予防ガイドブック「今日から予防！糖尿病」"
             REFERENCE_URL = "https://www.hokeniryo1.metro.tokyo.lg.jp/kensui/tonyo/citizen/6leaflet.html"
