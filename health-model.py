@@ -425,7 +425,7 @@ if st.session_state["predicted"] and st.session_state["prob"] is not None:
 
     st.markdown("### 🔍 関係している生活習慣")
 
-    with st.container(border=True):
+    with st.container():
 
         if prob < 0.10 and suppress_factors:
 
@@ -639,7 +639,7 @@ if st.session_state.get("predicted", False):
 
             response = genai_model.generate_content(prompt)
 
-            with st.container(border=True):
+            with st.container():
                 st.markdown(response.text)
 
             REFERENCE_TITLE = "糖尿病発症予防ガイドブック「今日から予防！糖尿病」"
@@ -659,4 +659,4 @@ if st.session_state.get("predicted", False):
                     "参照ページ：" + "、".join([f"p.{p}" for p in pages])
                 )
 
-                
+
