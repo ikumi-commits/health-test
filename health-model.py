@@ -484,8 +484,7 @@ if st.session_state["predicted"] and st.session_state["prob"] is not None:
     # Gemini設定
     # --------------------
     genai.configure(api_key=st.secrets["GOOGLE_API_KEY"])
-    genai_model = genai.GenerativeModel("gemini-2.5-flash")
-
+    genai_model = genai.GenerativeModel("models/gemini-1.5-flash")
 
     st.markdown("---")
     st.markdown("### 💡結果をもとに、生活のヒントを確認できます")
