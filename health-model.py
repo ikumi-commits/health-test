@@ -11,12 +11,13 @@ import time
 from pypdf import PdfReader
 from sentence_transformers import SentenceTransformer
 from sklearn.metrics.pairwise import cosine_similarity
+from pypdf import PdfReader
+
 
 
 st.set_page_config(layout="wide")
 
-#st.write("secrets OK:", "GOOGLE_API_KEY" in st.secrets)
-
+#タイトル
 st.markdown("""
 <h1 style="
     color: #2563eb;
@@ -28,9 +29,8 @@ st.markdown("""
 </h1>
 """, unsafe_allow_html=True)
 
-# =========================
-# session_state 初期化（最上部）
-# =========================
+
+# session_state 初期化
 if "predicted" not in st.session_state:
     st.session_state["predicted"] = False
 
@@ -50,17 +50,12 @@ if "target_factors" not in st.session_state:
     st.session_state["target_factors"] = []
 
 
-
-# =========================
 # 同意状態の初期化
-# =========================
 if "agreed" not in st.session_state:
     st.session_state["agreed"] = False
 
 
-# =========================
 # 同意画面
-# =========================
 if not st.session_state["agreed"]:
     st. write("#### ★ご利用にあたっての注意★")
 
@@ -82,39 +77,31 @@ if not st.session_state["agreed"]:
         st.session_state["agreed"] = True
         with st.spinner("お待ちください..."):
             time.sleep(2)
-        st.rerun()   # ← ここ重要
+        st.rerun()
 
     # 同意前はここで処理を止める
     st.stop()
 
 
-#PDFの読み込み
-from pypdf import PdfReader
 
-
-
-# -------------------------
-# モデルと特徴量の読み込み
-# -------------------------
+# モデルの読み込み
 FILE_ID = "1Mh7btoQb9QYpGg0KHhzIrpHhegG5ocq2"
 MODEL_LOCAL_PATH = "rf_model.pkl"
 
-# -------------------------
 # モデル読み込み関数
-# -------------------------
 @st.cache_resource
 def load_model():
     # ファイルがなければ Google Drive からダウンロード
     if not os.path.exists(MODEL_LOCAL_PATH):
-        #st.info("モデルをダウンロード中です…")
         url = f"https://drive.google.com/uc?id={FILE_ID}"
         gdown.download(url, MODEL_LOCAL_PATH, quiet=False)
-        #st.success("モデルをダウンロードしました！")
+
     # ファイルがあることを確認してから読み込む
     if os.path.exists(MODEL_LOCAL_PATH):
         with open(MODEL_LOCAL_PATH, "rb") as f:
             model = pickle.load(f)
         return model
+
     else:
         st.error("モデルファイルが存在しません。")
         st.stop()
@@ -122,10 +109,7 @@ def load_model():
 # 実際にロード
 model = load_model()
 
-
-#with open("rf_model.pkl", "rb") as f:
-#    model = pickle.load(f)
-
+#特徴量を読み込み
 with open("feature_names.pkl", "rb") as f:
     feature_names = pickle.load(f)
 
@@ -150,6 +134,7 @@ feature_labels = {
     "Veggies": "野菜摂取（１日に１回以上食べる）"
 }
 
+#年齢カテゴリ
 age_options = {
     1: "18～24歳",
     2: "25～29歳",
@@ -178,6 +163,7 @@ income_options = {
     8: "1125万円以上"
 }
 
+# 主観的健康状態
 genhlth_options = {
             1: "非常に良い",
             2: "とても良い",
@@ -187,13 +173,10 @@ genhlth_options = {
         }
 
 
-# -------------------------
-# 入力フォーム
-# -------------------------
 ordered_features = ["Sex", "Age", "BMI","Stroke","HeartDiseaseorAttack"] + [f for f in feature_names if f not in ["Sex", "Age", "BMI","Stroke","CholCheck","HeartDiseaseorAttack","AnyHealthcare","NoDocbcCost"]]
-
 inputs = {}
 
+#前提説明
 st.markdown("#### 🧾 このアプリでわかること")
 st.markdown(
     "- あなたと似た状態の方が糖尿病を発症した割合\n"
@@ -202,7 +185,6 @@ st.markdown(
 )
 
 # 入力フォーム作成
-
 def load_css():
     st.markdown("""
     <style>
@@ -310,11 +292,12 @@ with st.form("input_form"):
                 inputs[feature] = st.number_input(label, min_value=0.0, step=1.0)
 
     submitted = st.form_submit_button(
-        "この内容でリスクを確認する",
+        "糖尿病リスクを確認する",
         use_container_width=True
     )
 
 
+#リスク算出
 if submitted:
     with st.spinner("データを処理中です..."):
         time.sleep(2)
@@ -327,7 +310,7 @@ if submitted:
 
         prob = model.predict_proba(x)[0][1]
 
-        # SHAP計算
+        # SHAP計算（影響が大きい特徴量抽出）
         explainer = shap.TreeExplainer(model)
         shap_result = explainer(x)
         values = np.array(shap_result.values)
@@ -342,6 +325,7 @@ if submitted:
             "impact": shap_vals
         })
 
+        #行動では変えられない特徴量は除く
         exclude_features = ["Age", "Sex", "Income"]
         df_shap = df_shap[~df_shap["feature"].isin(exclude_features)]
         df_shap = df_shap.sort_values("impact", key=np.abs, ascending=False)
@@ -356,13 +340,13 @@ if submitted:
             else:
                 increase_factors.append(label)
 
-        # ✅ session_state に保存
+        # session_state に保存
         st.session_state["predicted"] = True
         st.session_state["prob"] = prob
         st.session_state["suppress_factors"] = suppress_factors
         st.session_state["increase_factors"] = increase_factors
 
-
+#リスクの状況に応じて、リスクを押し下げている、押し上げている特徴量を特定する
 if st.session_state["predicted"] and st.session_state["prob"] is not None:
     prob = st.session_state["prob"]
     suppress_factors = st.session_state["suppress_factors"]
@@ -392,9 +376,8 @@ if st.session_state["predicted"] and st.session_state["prob"] is not None:
     st.caption("※ 過去の統計データに基づき、同じ状態の方が糖尿病を発症している確率です")
 
 
-
     # --------------------
-    # リスク要因の表示（どちらか一方のみ）
+    # リスク要因の表示（ハイリスク、ローリスクで表示を出し分ける）
     # --------------------
     def load_css_life():
         st.markdown("""
@@ -429,6 +412,7 @@ if st.session_state["predicted"] and st.session_state["prob"] is not None:
 
         if prob < 0.10 and suppress_factors:
 
+            #ローリスク
             tags_html = "".join(
                 [f'<span class="tag">{factor}</span>' for factor in suppress_factors]
             )
@@ -450,6 +434,7 @@ if st.session_state["predicted"] and st.session_state["prob"] is not None:
 
         elif prob >= 0.10 and increase_factors:
 
+            #ハイリスク
             tags_html = "".join(
                 [f'<span class="tag">{factor}</span>' for factor in increase_factors]
             )
@@ -470,7 +455,7 @@ if st.session_state["predicted"] and st.session_state["prob"] is not None:
             )
 
 
-
+    #リスクに基づくプロンプトの定義
     if prob < 0.10:
         target_factors = suppress_factors
         advice_mode = "maintain"
@@ -499,23 +484,11 @@ if st.session_state["predicted"] and st.session_state["prob"] is not None:
     st.markdown("---")
     st.markdown("### 💡結果をもとに、生活のヒントを確認できます")
 
-#ここに追加
 
-        #参照情報をだす（PDFのどの部分を参照したか、チャンク）
-        #gitHab＋Stramlitクラウド
-        #ドキュメント類
-
-
-        #プロセスタイムを確認する
-    #参照元
-    #参照データを増やす
-    #リトリーバル
-
-
+#PDF読み込み
 pdf_path = "tokyo-advice.pdf"
 
 import pdfplumber
-import streamlit as st
 
 @st.cache_data
 def load_pdf_pages(pdf_path):
@@ -531,6 +504,7 @@ def load_pdf_pages(pdf_path):
                 })
     return pages
 
+#PDFをテキスト化してリトリーバルの準備
 def split_text_with_meta(pages, chunk_size=500, overlap=100):
     chunks = []
     for p in pages:
@@ -570,6 +544,8 @@ def retrieve_context(query, embeddings, chunks, model, top_k=3):
         })
     return results
 
+#RAGを実行してアドバイスを生成する
+#関係ある特徴量等を考慮して個別最適化された内容を表示
 if st.session_state.get("predicted", False):
 
     if st.button("アドバイスを見る", use_container_width=True):
@@ -600,6 +576,7 @@ if st.session_state.get("predicted", False):
 【対象者の状況】
 {st.session_state["prob"]}
 {st.session_state["intro_text"]}
+
 
 【リスクに関係する要因】
 ・{'、'.join(st.session_state["target_factors"])}
@@ -659,14 +636,9 @@ if st.session_state.get("predicted", False):
                 )
 
 
-
-#            with st.container():
-#                st.markdown(response.text)
-
+            #参照した部分を表示する
             REFERENCE_TITLE = "糖尿病発症予防ガイドブック「今日から予防！糖尿病」"
             REFERENCE_URL = "https://www.hokeniryo1.metro.tokyo.lg.jp/kensui/tonyo/citizen/6leaflet.html"
-
-            # retrieved_results は retrieve_context(...) の戻り値を想定
 
             # ページ番号のみ重複排除して昇順にする
             pages = sorted({r["page"] for r in retrieved_results})
@@ -679,5 +651,3 @@ if st.session_state.get("predicted", False):
                 st.markdown(
                     "参照ページ：" + "、".join([f"p.{p}" for p in pages])
                 )
-
-
